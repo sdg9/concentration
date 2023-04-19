@@ -1,0 +1,90 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class ConcentrationGame : MonoBehaviour
+{
+    public int numRows = 4;     // Number of rows of cards
+    public int numCols = 6;     // Number of columns of cards
+    public GameObject cardPrefab;   // Prefab for the card game object
+
+    private GameObject[,] cards;    // 2D array of card game objects
+    private int[,] cardValues;      // 2D array of card values
+    private int numCardsFlipped = 0;    // Number of cards that have been flipped
+    private int firstCardRow = -1;      // Row of first card that was flipped
+    private int firstCardCol = -1;      // Column of first card that was flipped
+    private int secondCardRow = -1;     // Row of second card that was flipped
+    private int secondCardCol = -1;     // Column of second card that was flipped
+    private bool isPlayer1Turn = true;  // True if it's player 1's turn, false if it's player 2's turn
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        // Initialize cards array
+        cards = new GameObject[numRows, numCols];
+
+        // Initialize card values array
+        cardValues = new int[numRows, numCols];
+
+        // Create cards and set their values
+        for (int row = 0; row < numRows; row++)
+        {
+            for (int col = 0; col < numCols; col++)
+            {
+                // Create card game object from prefab
+                GameObject card = Instantiate(cardPrefab, new Vector3(col * 2, row * 2, 0), Quaternion.identity);
+
+                // Set card parent to this game object
+                card.transform.parent = transform;
+
+                // Set card value
+                int value = (row * numCols + col) / 2 + 1;
+                cardValues[row, col] = value;
+
+                // Add card to cards array
+                cards[row, col] = card;
+            }
+        }
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        // Check if two cards have been flipped
+        if (numCardsFlipped == 2)
+        {
+            // Check if the cards have the same value
+            if (cardValues[firstCardRow, firstCardCol] == cardValues[secondCardRow, secondCardCol])
+            {
+                // Cards have the same value, so player wins the pair
+                Debug.Log("Player " + (isPlayer1Turn ? "1" : "2") + " wins!");
+
+                // Destroy cards
+                Destroy(cards[firstCardRow, firstCardCol]);
+                Destroy(cards[secondCardRow, secondCardCol]);
+            }
+            else
+            {
+                // Cards have different values, so flip them back over
+                cards[firstCardRow, firstCardCol].GetComponent<Card>().FlipCard();
+                cards[secondCardRow, secondCardCol].GetComponent<Card>().FlipCard();
+
+                // Switch turns
+                isPlayer1Turn = !isPlayer1Turn;
+            }
+
+            // Reset flip count and card positions
+            numCardsFlipped = 0;
+            firstCardRow = -1;
+            firstCardCol = -1;
+            secondCardRow = -1;
+            secondCardCol = -1;
+        }
+    }
+
+    // // Method called when a card is flipped
+    // public void CardFlipped(int row, int col)
+    // {
+    //     // Check if it's the player's
+
+// Function to call when a card is flipped
