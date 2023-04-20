@@ -5,14 +5,13 @@ using System.Collections.Generic;
 public class ConcentrationGame : MonoBehaviour
 {
     public GameObject cardPrefab; // The card prefab to be instantiated
-    public int numRows = 4; // Number of rows of cards
-    public int numCols = 6; // Number of columns of cards
+
+    public int numCards = 20;
 
     // Array of sprites for the cards
     public Sprite[] cardFaces;
 
-    public float xOffset = 0f;
-    public float yOffset = 0f;
+    public float cardScale = .95f;
 
     // private Transform gameBoard = this;
 
@@ -23,19 +22,6 @@ public class ConcentrationGame : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        // Create the cards
-        // for (int row = 0; row < numRows; row++)
-        // {
-        //     for (int col = 0; col < numCols; col++)
-        //     {
-        //         GameObject card = Instantiate(cardPrefab, new Vector3(col * 2, 0, row * 2), Quaternion.identity);
-        //         card.transform.parent = this.transform;
-        //         cards.Add(card);
-        //     }
-        // }
-
-        // // Shuffle the cards
-        // Shuffle(cards);
         GenerateCards();
     }
 
@@ -121,34 +107,40 @@ public class ConcentrationGame : MonoBehaviour
 
     public void GenerateCards()
     {
-        int numCards = numRows * numCols;
+        // Delete any existing cards
+        foreach (Transform child in transform)
+        {
+            Destroy(child.gameObject);
+        }
 
-        // Shuffle the card types
         ShuffleCardTypes();
+
+
+        // clone array of cardFaces
+        Sprite[] cardFacesClone = cardFaces.Clone() as Sprite[];
+        // randomize order of cardFacesClone
+        for (int j = 0; j < cardFacesClone.Length; j++)
+        {
+            Sprite temp = cardFacesClone[j];
+            int randomIndex = UnityEngine.Random.Range(j, cardFacesClone.Length);
+            cardFacesClone[j] = cardFacesClone[randomIndex];
+            cardFacesClone[randomIndex] = temp;
+        }
+
 
         for (int i = 0; i < numCards; i++)
         {
-            // Calculate the row and column of this card
-            int row = i / numCols;
-            int col = i % numCols;
-
-            // Instantiate a new card game object
-            GameObject cardGO = Instantiate(cardPrefab);
-
-            // Set the card's parent to the card container
-            cardGO.transform.SetParent(this.transform);
-
-            // Position the card based on its row and column
-            float x = (col - (numCols - 1) * 0.5f) * xOffset;
-            float y = ((numRows - 1) * 0.5f - row) * yOffset;
-            cardGO.transform.localPosition = new Vector3(x, y, 0f);
+            // Instantiate a new card game object keeping scale
+            GameObject cardGO = Instantiate(cardPrefab, this.transform);
+            // cardGO.transform.localScale = new Vector3(cardScale, cardScale, 1f);
 
             // Set the card's cardType
             Card card = cardGO.GetComponent<Card>();
+
             card.cardType = cardTypes[i];
             if (cardTypes[i] < cardFaces.Length)
             {
-                card.cardFront = cardFaces[cardTypes[i]];
+                card.cardFront = cardFacesClone[cardTypes[i]];
             }
 
             // Subscribe to the CardClicked event
@@ -168,8 +160,6 @@ public class ConcentrationGame : MonoBehaviour
 
     void ShuffleCardTypes()
     {
-        int numCards = numRows * numCols;
-        // Create a list of card types
         List<int> cardTypeList = new List<int>();
 
         // Add each card type to the list twice
@@ -178,6 +168,7 @@ public class ConcentrationGame : MonoBehaviour
             cardTypeList.Add(i);
             cardTypeList.Add(i);
         }
+
 
         // Shuffle the list of card types
         for (int i = 0; i < cardTypeList.Count; i++)
@@ -197,85 +188,9 @@ public class ConcentrationGame : MonoBehaviour
         {
             cardTypesString += cardTypes[i] + " ";
         }
-        Debug.Log(cardTypesString);
+        Debug.Log("Card types: " + cardTypesString);
 
     }
-
-    // void ShuffleCardTypes()
-    // {
-    //     int numCards = numRows * numCols;
-
-    //     // Initialize a temporary array to hold the card types
-    //     // int[] tempCardTypes = new int[numCards / 2];
-    //     List<int> tempCardTypes = new List<int>();
-    //     for (int i = 0; i < cardTypes.Length; i++)
-    //     {
-    //         tempCardTypes[i] = cardTypes[i];
-    //     }
-
-    //     // Shuffle the card types using the Fisher-Yates shuffle algorithm
-    //     for (int i = 0; i < tempCardTypes.Count - 1; i++)
-    //     {
-    //         int j = Random.Range(i, tempCardTypes.Count);
-    //         int temp = tempCardTypes[i];
-    //         tempCardTypes[i] = tempCardTypes[j];
-    //         tempCardTypes[j] = temp;
-    //     }
-
-    //     // Copy the shuffled card types back to the original array
-    //     // for (int i = 0; i < cardTypes.Length; i++)
-    //     // {
-    //     //     cardTypes[i] = tempCardTypes[i];
-    //     // }
-
-    //     cardTypes = tempCardTypes.ToArray();
-    // }
-
-
-
-
-
-    // void Generate()
-    // {
-    //     // Generate the pairs of cards
-    //     for (int i = 0; i < cardCount / 2; i++)
-    //     {
-    //         // Choose a random card type that hasn't been used yet
-    //         int cardType = Random.Range(0, cardTypes.Count);
-    //         while (cardCounts[cardType] >= 2)
-    //         {
-    //             cardType = Random.Range(0, cardTypes.Count);
-    //         }
-
-    //         // Create the first card
-    //         GameObject card1 = Instantiate(cardPrefab, new Vector3(x, y, 0), Quaternion.identity);
-    //         card1.GetComponent<Card>().cardType = cardType;
-
-    //         // Create the second card
-    //         GameObject card2 = Instantiate(cardPrefab, new Vector3(x, y - yOffset, 0), Quaternion.identity);
-    //         card2.GetComponent<Card>().cardType = cardType;
-
-    //         // Add the cards to the list of all cards
-    //         allCards.Add(card1);
-    //         allCards.Add(card2);
-
-    //         // Update the card counts
-    //         cardCounts[cardType] += 2;
-
-    //         // Increment the x position
-    //         x += xOffset;
-
-    //         // Reset the x position and increment the y position after every row of cards
-    //         if (i % cardsPerRow == cardsPerRow - 1)
-    //         {
-    //             x = startX;
-    //             y -= yOffset;
-    //         }
-    //     }
-
-    // }
-
-
 
     // Coroutine to flip the selected cards face down after a delay
     IEnumerator FlipCardsFaceDown()
