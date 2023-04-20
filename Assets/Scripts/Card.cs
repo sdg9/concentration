@@ -1,4 +1,5 @@
 using System;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,18 +13,24 @@ public class Card : MonoBehaviour
     public bool isFaceUp = false;
 
     // The sprite renderer component of the card
-    private SpriteRenderer spriteRenderer;
-    private Image image;
+    // private SpriteRenderer spriteRenderer;
+    // private Image image;
+
+    private Image frontImage;
+    private Image backImage;
 
     // Source image
-    public Sprite cardBack;
-    public Sprite cardFront;
+    // public Sprite cardBack;
+    // public Sprite cardFront;
+
+    public Transform cardBackTransform;
+    public Transform cardFrontTransform;
 
     // The sprite for the card's face-up state (set in the Inspector)
-    public Sprite faceUpSprite;
+    public Sprite cardFront;
 
     // The sprite for the card's face-down state (set in the Inspector)
-    public Sprite faceDownSprite;
+    public Sprite cardBack;
 
     public event Action<Card> CardClicked;
 
@@ -31,8 +38,12 @@ public class Card : MonoBehaviour
     // Initialization
     private void Awake()
     {
-        spriteRenderer = GetComponent<SpriteRenderer>();
-        image = GetComponent<Image>();
+        // spriteRenderer = GetComponent<SpriteRenderer>();
+        // image = GetComponent<Image>();
+
+        // find image component in cardBackTransform
+        backImage = cardBackTransform.GetComponent<Image>();
+        frontImage = cardFrontTransform.GetComponent<Image>();
     }
 
     void Start()
@@ -41,7 +52,32 @@ public class Card : MonoBehaviour
         // _image.sprite = cardBack;
         Button button = GetComponent<Button>();
         button.onClick.AddListener(OnCardClick);
+
+        frontImage.sprite = cardFront;
+        frontImage.color = Color.white;
+        backImage.sprite = cardBack;
+        // backImage.color = Color.white;
+        // Button cardBackButton = cardBackTransform.GetComponent<Button>();
+        // cardBackButton.onClick.AddListener(OnCardBackClick);
+
+        // Button cardFrontButton = cardFrontTransform.GetComponent<Button>();
+        // cardFrontButton.onClick.AddListener(OnCardFrontClick);
     }
+
+    // card back click
+    // private void OnCardBackClick()
+    // {
+    //     Debug.Log("Card Back Clicked");
+    //     Flip();
+    // }
+
+    // // card front click
+    // private void OnCardFrontClick()
+    // {
+    //     Debug.Log("Card Front Clicked");
+    //     Flip();
+    // }
+
 
     void OnCardClick()
     {
@@ -52,39 +88,75 @@ public class Card : MonoBehaviour
         //     // Handle card flip logic here
         // }
         Debug.Log("Card Clicked");
-        // isFaceUp = true;
         Flip();
     }
 
     // Flip the card face up or face down
     public void Flip()
     {
-        if (isFaceUp)
+        // transform.DORotate(new Vector3(0, transform.eulerAngles.y + 180, 0), 0.5f, RotateMode.FastBeyond360);
+        transform.DORotate(new Vector3(0, transform.eulerAngles.y + 90, 0), 0.25f, RotateMode.FastBeyond360).OnComplete(() =>
         {
-            // Face down the card
-            // spriteRenderer.sprite = faceDownSprite;
-            // set the color to red
-            // spriteRenderer.color = Color.red;
-            // set the image color to red
-            image.color = Color.green;
-            image.sprite = cardBack;
-            isFaceUp = false;
-        }
-        else
-        {
-            // Face up the card
-            // spriteRenderer.sprite = faceUpSprite;
-            // set the image color to red
-            // image.color = Color.red;
-            // image.color = Color.clear;
+            if (isFaceUp)
+            {
+                // layer frontImage above backImage
+                // frontImage.transform.SetAsLastSibling();
 
-            // remove color
-            image.color = Color.white;
+                // hide frontImage
+                backImage.gameObject.SetActive(true);
+                frontImage.gameObject.SetActive(false);
+            }
+            else
+            {
+                // backImage.transform.SetAsLastSibling();
+                backImage.gameObject.SetActive(false);
+                frontImage.gameObject.SetActive(true);
+            }
+            isFaceUp = !isFaceUp;
 
-            image.sprite = cardFront;
-            isFaceUp = true;
-            CardClicked?.Invoke(this);
-        }
+            transform.DORotate(new Vector3(0, transform.eulerAngles.y + 90, 0), 0.25f, RotateMode.FastBeyond360);
+        });
+        // Debug.Log("Is face up: " + isFaceUp);
+        // if (isFaceUp)
+        // {
+        //     // layer frontImage above backImage
+        //     frontImage.transform.SetAsLastSibling();
+
+        //     // Face down the card
+        //     // spriteRenderer.sprite = faceDownSprite;
+        //     // set the color to red
+        //     // spriteRenderer.color = Color.red;
+        //     // set the image color to red
+        //     // image.color = Color.green;
+        //     // image.sprite = cardBack;
+
+        //     // flip the card
+        //     // transform.DOFlip().SetEase(Ease.InOutBack);
+
+        //     // flip the card using DOTween animation
+
+        //     // transform.DOFlip()
+        //     // isFaceUp = false;
+        // }
+        // else
+        // {
+        //     backImage.transform.SetAsLastSibling();
+        //     // Face up the card
+        //     // spriteRenderer.sprite = faceUpSprite;
+        //     // set the image color to red
+        //     // image.color = Color.red;
+        //     // image.color = Color.clear;
+
+        //     // remove color
+        //     // image.color = Color.white;
+
+        //     // image.sprite = cardFront;
+        //     // isFaceUp = true;
+        //     // transform.DORotate(new Vector3(0, 180, 0), 0.5f, RotateMode.FastBeyond360);
+        //     // CardClicked?.Invoke(this);
+        // }
+        // transform.DORotate(new Vector3(0, transform.eulerAngles.y + 90, 0), 0.25f, RotateMode.FastBeyond360);
+        // isFaceUp = !isFaceUp;
     }
 
     // Check if the card matches another card

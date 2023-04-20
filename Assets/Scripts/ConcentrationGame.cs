@@ -42,60 +42,60 @@ public class ConcentrationGame : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // Check for mouse click
-        if (Input.GetMouseButtonDown(0))
-        {
-            Debug.Log("Mouse Clicked");
-            // Raycast to see if a card was clicked
-            RaycastHit hit;
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out hit))
-            {
-                GameObject card = hit.collider.gameObject;
+        // // Check for mouse click
+        // if (Input.GetMouseButtonDown(0))
+        // {
+        //     Debug.Log("Mouse Clicked");
+        //     // Raycast to see if a card was clicked
+        //     RaycastHit hit;
+        //     Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        //     if (Physics.Raycast(ray, out hit))
+        //     {
+        //         GameObject card = hit.collider.gameObject;
 
-                Debug.Log("Hit " + card.name);
-                // Check if the card is already face up or if two cards are already selected
-                if (!card.GetComponent<Card>().isFaceUp && selectedCards[1] == null)
-                {
-                    // Flip the card face up
-                    card.GetComponent<Card>().Flip();
+        //         Debug.Log("Hit " + card.name);
+        //         // Check if the card is already face up or if two cards are already selected
+        //         if (!card.GetComponent<Card>().isFaceUp && selectedCards[1] == null)
+        //         {
+        //             // Flip the card face up
+        //             card.GetComponent<Card>().Flip();
 
-                    // Add the card to the selected cards array
-                    if (selectedCards[0] == null)
-                    {
-                        selectedCards[0] = card;
-                    }
-                    else
-                    {
-                        selectedCards[1] = card;
+        //             // Add the card to the selected cards array
+        //             if (selectedCards[0] == null)
+        //             {
+        //                 selectedCards[0] = card;
+        //             }
+        //             else
+        //             {
+        //                 selectedCards[1] = card;
 
-                        // Check if the two selected cards match
-                        if (selectedCards[0].GetComponent<Card>().cardType == selectedCards[1].GetComponent<Card>().cardType)
-                        {
-                            // The cards match, so remove them from the game
-                            Destroy(selectedCards[0]);
-                            Destroy(selectedCards[1]);
-                            numPairsFound++;
+        //                 // Check if the two selected cards match
+        //                 if (selectedCards[0].GetComponent<Card>().cardType == selectedCards[1].GetComponent<Card>().cardType)
+        //                 {
+        //                     // The cards match, so remove them from the game
+        //                     Destroy(selectedCards[0]);
+        //                     Destroy(selectedCards[1]);
+        //                     numPairsFound++;
 
-                            // Check if all pairs have been found
-                            if (numPairsFound == (numRows * numCols) / 2)
-                            {
-                                Debug.Log("Game Over!");
-                            }
-                        }
-                        else
-                        {
-                            // The cards do not match, so flip them face down
-                            StartCoroutine(FlipCardsFaceDown());
-                        }
+        //                     // Check if all pairs have been found
+        //                     if (numPairsFound == (numRows * numCols) / 2)
+        //                     {
+        //                         Debug.Log("Game Over!");
+        //                     }
+        //                 }
+        //                 else
+        //                 {
+        //                     // The cards do not match, so flip them face down
+        //                     StartCoroutine(FlipCardsFaceDown());
+        //                 }
 
-                        // Clear the selected cards array
-                        selectedCards[0] = null;
-                        selectedCards[1] = null;
-                    }
-                }
-            }
-        }
+        //                 // Clear the selected cards array
+        //                 selectedCards[0] = null;
+        //                 selectedCards[1] = null;
+        //             }
+        //         }
+        //     }
+        // }
     }
 
     // Shuffle a list of game objects
@@ -286,7 +286,7 @@ public class ConcentrationGame : MonoBehaviour
         {
             if (card != null)
             {
-                card.GetComponent<Card>().Flip();
+                // card.GetComponent<Card>().Flip();
             }
         }
     }
