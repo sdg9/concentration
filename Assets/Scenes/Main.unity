@@ -832,7 +832,10 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 74e55a1f8c5386042a59666a1b046fb7, type: 3}
   - {fileID: 21300000, guid: 3fbfe065c6119fc48a7b635ea4ac4e38, type: 3}
   - {fileID: 21300000, guid: ad030200db290a74da9a4a26b7b54ba0, type: 3}
-  - {fileID: 21300000, guid: 34c65ef075e6ab744bcf2736480402ce, type: 3}
+  - {fileID: 21300000, guid: f6be12bfa6335834eaf711789a7f7730, type: 3}
+  - {fileID: 21300000, guid: 1b861241b8df7b24e91e2762327b5c5b, type: 3}
+  - {fileID: 21300000, guid: 9493f77b06c41da40b83f1a8ea33cdd3, type: 3}
+  - {fileID: 21300000, guid: 0074238eee619064294b129ffa9512f2, type: 3}
   cardScale: 1
 --- !u!114 &1589984727
 MonoBehaviour:
